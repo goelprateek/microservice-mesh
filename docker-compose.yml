@@ -1,0 +1,92 @@
+version: '2'
+
+services:
+
+  mongodb:
+    image: mongo:3.4
+    container_name: uaa-mongodb
+    expose:
+      - 27017
+    ports:
+      - "39017:27017"
+    volumes:
+      - /var/lib/mongodb:/data/db
+    command: mongod --smallfiles
+    logging:
+      driver: "json-file"
+
+  service-registry:
+      build:
+        context: ./service-registry
+        dockerfile: Dockerfile
+      image: gonogo/service-registry
+      environment:
+        SERVICE_HOST: registry
+        SERVICE_PORT: 8761
+
+  uaa-server:
+    build:
+      context: ./uaa-server
+      dockerfile: Dockerfile
+    image: gonogo/uaa-server
+    logging:
+      driver: json-file
+    ports:
+      - "9091:9091"
+    depends_on:
+      - mongodb
+    environment:
+      SERVICE_PORT: 9091
+      REGISTRY_URL: http://service-registry:8761/eureka
+    links:
+      - mongodb:mongodb
+      - service-registry:service-registry
+
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    image: gonogo/gateway
+    logging:
+      driver: json-file
+    expose:
+      - 8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - uaa-server
+    links:
+      - service-registry:service-registry
+      - uaa-server:uaa-server
+    environment:
+      SERVICE_PORT: 8080
+      REGISTRY_URL: http://service-registry:8761/eureka
+
+  resource-server:
+    build:
+      context: ./resource-server
+      dockerfile: Dockerfile
+    image: gonogo/resource-server
+    logging:
+      driver: json-file
+    links:
+      - service-registry:service-registry
+      - uaa-server:uaa-server
+    environment:
+      SERVICE_PORT: 8081
+      REGISTRY_URL: http://service-registry:8761/eureka
+
+
+  social-client:
+    build:
+      context: ./social-client
+      dockerfile: Dockerfile
+    image: gonogo/social-client
+    logging:
+      driver: json-file
+    links:
+      - service-registry:service-registry
+    environment:
+      SERVICE_PORT: 8081
+      REGISTRY_URL: http://service-registry:8761/eureka
+

@@ -1,0 +1,21 @@
+
+
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          username: goelprateek@gmail.com
+          password: mln!Soni12
+          clone-on-start: true
+          uri: https://github.com/goelprateek/microservices-configuration.git
+
+
+server:
+  port: 9092
+
+
+security:
+  basic:
+    enabled: false
+

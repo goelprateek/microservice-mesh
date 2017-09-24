@@ -1,0 +1,1 @@
+package com.softcell.gonogo.authserver.rest;

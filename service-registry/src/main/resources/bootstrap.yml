@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: service-registry
+  cloud:
+      config:
+        uri: ${CONFIG_SERVER_URL:http://localhost:9092}
+        fail-fast: true
+
+
+
+
