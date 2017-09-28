@@ -1,0 +1,9 @@
+
+gng:
+  resource:
+    access-token-validity: 30
+    refresh-token-validity: 86400
+    localValidation: true
+    checkTokenUri: http://localhost:9091/uaa/oauth/token_key
+  resource-server-properties:
+    id: rest_api

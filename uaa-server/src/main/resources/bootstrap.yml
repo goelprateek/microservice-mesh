@@ -3,5 +3,5 @@ spring:
     name: auth-server
   cloud:
     config:
-      uri: ${CONFIG_SERVER_URL:http://localhost:9092}
+      uri: ${CONFIG_SERVER_URL:http://localhost:9094}
 

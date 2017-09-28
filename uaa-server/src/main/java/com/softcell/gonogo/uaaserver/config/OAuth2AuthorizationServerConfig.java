@@ -4,6 +4,7 @@ import com.softcell.gonogo.uaaserver.service.ClientDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -39,6 +40,7 @@ import java.util.Arrays;
 @EnableAuthorizationServer
 @EnableWebSecurity
 @Order(2)
+@RefreshScope
 public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
 

@@ -1,6 +1,7 @@
 package com.softcell.gonogo.cardstatementservice.rest;
 
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.softcell.gonogo.cardstatementservice.client.CardClient;
 import com.softcell.gonogo.cardstatementservice.client.StatementClient;
 import com.softcell.gonogo.cardstatementservice.domain.CreditcardDto;
@@ -12,14 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
 public class CardStatementController {
+
+
 
     @Autowired
     private CardClient cardClient;
@@ -28,7 +28,14 @@ public class CardStatementController {
     private StatementClient statementClient;
 
 
+    public ResponseEntity<Map<CreditcardDto, Collection<StatementDto>>> fallback(String cardId){
+        Map<CreditcardDto, Collection<StatementDto>> response = new HashMap<>();;
+        return ResponseEntity.ok(response);
+    }
+
+
     @GetMapping("statement-by-card")
+    @HystrixCommand(fallbackMethod = "fallback")
     public ResponseEntity<Map<CreditcardDto, Collection<StatementDto>>> getCardStatement(@RequestParam String cardId) {
 
         Map<CreditcardDto, Collection<StatementDto>> response = new HashMap<>();

@@ -3,4 +3,8 @@ spring:
     name: resource-server
   cloud:
     config:
-      uri: ${CONFIG_SERVER_URL:http://localhost:9092}
+      uri: ${CONFIG_SERVER_URL:http://localhost:9094}
+    bus:
+      enabled: true
+      trace:
+        enabled: true

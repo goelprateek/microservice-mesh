@@ -3,4 +3,4 @@ spring:
     name: statement-service
   cloud:
     config:
-      uri: ${CLOUD_SERVER_URL:http://localhost:9092}
+      uri: ${CLOUD_SERVER_URL:http://localhost:9094}

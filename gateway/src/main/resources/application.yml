@@ -1,7 +1,8 @@
 spring:
   aop:
     proxyTargetClass: true
-
-
-
-
+  sleuth:
+    sampler:
+      percentage: 1.0
+    web:
+      skip-pattern: (.+favicon.*)

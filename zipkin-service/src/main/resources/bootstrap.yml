@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: zipkin-service
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER_URL:http://localhost:9094}
+      fail-fast: true

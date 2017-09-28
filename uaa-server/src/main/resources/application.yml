@@ -1,0 +1,4 @@
+gng:
+  security:
+    jwt:
+      pass: ${pass:mySecretKey}

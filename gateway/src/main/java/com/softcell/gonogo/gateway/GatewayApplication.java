@@ -8,6 +8,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.ribbon.RibbonClientHttpRequestFactory;
 import org.springframework.cloud.netflix.ribbon.SpringClientFactory;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
+import org.springframework.cloud.sleuth.Sampler;
+import org.springframework.cloud.sleuth.Span;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.token.AccessTokenProviderChain;
@@ -30,6 +32,7 @@ public class GatewayApplication extends SpringBootServletInitializer{
 	public static void main(String[] args) {
 		SpringApplication.run(GatewayApplication.class, args);
 	}
+
 
 	@Bean
 	UserInfoRestTemplateCustomizer userInfoRestTemplateCustomizer(SpringClientFactory springClientFactory) {

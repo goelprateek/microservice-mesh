@@ -2,8 +2,13 @@
 
 spring:
   cloud:
+    bus:
+      enabled: true
     config:
       server:
+        monitor:
+          github:
+            enabled: true
         git:
           username: goelprateek@gmail.com
           password: mln!Soni12
@@ -11,8 +16,10 @@ spring:
           uri: https://github.com/goelprateek/microservices-configuration.git
 
 
+
+
 server:
-  port: 9092
+  port: 9094
 
 
 security:
