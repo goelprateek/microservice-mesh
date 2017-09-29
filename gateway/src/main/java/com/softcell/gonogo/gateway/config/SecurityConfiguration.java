@@ -7,8 +7,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -55,16 +57,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        //@formatter:on
         http.authorizeRequests()
                 .antMatchers("/", "/**/*.html").permitAll()
+                .antMatchers("/v2/api-docs/**").permitAll()
+                .antMatchers("/swagger-resources/configuration/ui").permitAll()
+                .antMatchers("/swagger-ui/index.html").permitAll()
+                .antMatchers("/api/**").authenticated()
                 .antMatchers("/uaa/**", "/login", "/social/**").permitAll().anyRequest().authenticated()
-                .and()
+            .and()
                 .csrf().requireCsrfProtectionMatcher(csrfRequestMatcher()).csrfTokenRepository(csrfTokenRepository())
-                .and()
+            .and()
                 .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class)
                 .addFilterAfter(oAuth2AuthenticationProcessingFilter(), AbstractPreAuthenticatedProcessingFilter.class)
                 .logout().permitAll()
                 .logoutSuccessUrl("/");
+        //@formatter:off
     }
 
     private OAuth2AuthenticationProcessingFilter oAuth2AuthenticationProcessingFilter() {
@@ -108,7 +116,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             private final Pattern allowedMethods = Pattern.compile("^(GET|HEAD|OPTIONS|TRACE)$");
 
             // Disable CSFR protection on the following urls:
-            private final AntPathRequestMatcher[] requestMatchers = { new AntPathRequestMatcher("/uaa/**") };
+            private final AntPathRequestMatcher[] requestMatchers = {new AntPathRequestMatcher("/uaa/**")};
 
             @Override
             public boolean matches(HttpServletRequest request) {
@@ -132,4 +140,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return repository;
     }
 
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring()
+                .antMatchers(HttpMethod.OPTIONS, "/**")
+                .antMatchers("/swagger-ui/index.html");
+    }
 }

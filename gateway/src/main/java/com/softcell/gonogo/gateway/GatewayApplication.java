@@ -1,7 +1,12 @@
 package com.softcell.gonogo.gateway;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoRestTemplateCustomizer;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -10,7 +15,10 @@ import org.springframework.cloud.netflix.ribbon.SpringClientFactory;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.cloud.sleuth.Sampler;
 import org.springframework.cloud.sleuth.Span;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.env.Environment;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.token.AccessTokenProviderChain;
 import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsAccessTokenProvider;
@@ -18,19 +26,44 @@ import org.springframework.security.oauth2.client.token.grant.code.Authorization
 import org.springframework.security.oauth2.client.token.grant.implicit.ImplicitAccessTokenProvider;
 import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordAccessTokenProvider;
 
+import javax.annotation.PostConstruct;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * API Gateway
  */
-@SpringBootApplication
+@ComponentScan
+@EnableAutoConfiguration(exclude = {HibernateJpaAutoConfiguration.class})
 @EnableZuulProxy
 @EnableDiscoveryClient
 public class GatewayApplication extends SpringBootServletInitializer{
 
-	public static void main(String[] args) {
-		SpringApplication.run(GatewayApplication.class, args);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GatewayApplication.class);
+
+	@Autowired
+	public Environment environment;
+
+	public static void main(String[] args) throws UnknownHostException {
+		SpringApplication app = new SpringApplication(GatewayApplication.class);
+		Environment env = app.run(args).getEnvironment();
+		LOGGER.info("\n----------------------------------------------------------\n\t" +
+						"Application '{}' is running! Access URLs:\n\t" +
+						"Local: \t\thttp://localhost:{}\n\t" +
+						"External: \thttp://{}:{}\n----------------------------------------------------------",
+				env.getProperty("spring.application.name"),
+				env.getProperty("server.port"),
+				InetAddress.getLocalHost().getHostAddress(),
+				env.getProperty("server.port"));
+
+		String configServerStatus = env.getProperty("configserver.status");
+		LOGGER.info("\n----------------------------------------------------------\n\t" +
+						"Config Server: \t{}\n----------------------------------------------------------",
+				configServerStatus == null ? "Not found or not setup for this application" : configServerStatus);
 	}
 
 
@@ -47,5 +80,25 @@ public class GatewayApplication extends SpringBootServletInitializer{
 					.collect(Collectors.collectingAndThen(Collectors.toList(), AccessTokenProviderChain::new));
 			template.setAccessTokenProvider(accessTokenProviderChain);
 		};
+	}
+
+	/**
+	 * Initializes Gateway.
+	 * <p>
+	 * Spring profiles can be configured with a program arguments --spring.profiles.active=your-active-profile
+	 * <p>
+	 */
+	@PostConstruct
+	public void initApplication() {
+		LOGGER.info("Running with Spring profile(s) : {}", Arrays.toString(environment.getActiveProfiles()));
+		Collection<String> activeProfiles = Arrays.asList(environment.getActiveProfiles());
+		if (activeProfiles.contains("dev") && activeProfiles.contains("prod")) {
+			LOGGER.error("You have misconfigured your application! It should not run " +
+					"with both the 'dev' and 'prod' profiles at the same time.");
+		}
+		if (activeProfiles.contains("dev") && activeProfiles.contains("cloud")) {
+			LOGGER.error("You have misconfigured your application! It should not" +
+					"run with both the 'dev' and 'cloud' profiles at the same time.");
+		}
 	}
 }

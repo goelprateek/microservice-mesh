@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 /**
  * Created by prateek on 23/5/17.
  */
@@ -64,18 +63,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+
+
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         // @formatter:off
-
-        /*http.csrf()
-                .disable()
-                .formLogin().loginPage("/login").permitAll().and()
-                .requestMatchers().antMatchers("/login" , "/oauth/authorize", "/oauth/confirm_access")
-                .and()
-                .authorizeRequests()
-                .anyRequest()
-                .authenticated();*/
 
         http.formLogin().loginPage("/login").permitAll().and().authorizeRequests()
                 .anyRequest().authenticated();

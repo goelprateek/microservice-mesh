@@ -6,3 +6,23 @@ spring:
       percentage: 1.0
     web:
       skip-pattern: (.+favicon.*)
+
+gonogo:
+  swagger:
+    default-include-pattern: /api/.*
+    title: zuulproxy API
+    description: zuulproxy API documentation
+    version: 0.0.1
+    terms-of-service-url:
+    contact-name:
+    contact-url:
+    contact-email:
+    license:
+    license-url:
+  gateway:
+    rate-limiting:
+        enabled: false
+        limit: 100000
+        duration-in-seconds: 3600
+    authorized-microservices-endpoints: # Access Control Policy, if left empty for a route, all endpoints will be accessible
+        app1: /api,/v2/api-docs # recommended dev configuration

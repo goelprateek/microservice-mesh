@@ -3,4 +3,4 @@ spring:
     name: hystrics-dashboard
   cloud:
     config:
-      uri: http://localhost:9094/
+      uri: ${CONFIG_SERVER_URL:http://localhost:9094}

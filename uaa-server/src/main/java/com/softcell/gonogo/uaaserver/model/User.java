@@ -21,4 +21,5 @@ public class User {
     private List<String> rights;
     @CreatedDate
     private Date dateCreated;
+    private Boolean isActivated;
 }

@@ -16,7 +16,7 @@ public class UserAuthConfigService {
     private  UserService userService;
 
     public User getUser(String email) {
-        return userService.findByEmail(email);
+        return userService.findByEmail(email).get();
     }
 
     public List<GrantedAuthority> getRights(User user) {

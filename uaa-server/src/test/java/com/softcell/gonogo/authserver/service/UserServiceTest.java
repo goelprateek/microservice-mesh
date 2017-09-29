@@ -64,7 +64,7 @@ public class UserServiceTest {
     @Test
     public void c_findByEmail() throws Exception {
 
-        User userById = userRepository.findByEmail(user.getEmail());
+        User userById = userRepository.findByEmail(user.getEmail()).get();
 
         assertEquals(userById.getId(),user.getId());
 

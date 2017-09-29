@@ -1,5 +1,6 @@
-package com.softcell.gonogo.uaaserver.config;
+package com.softcell.gonogo.uaaserver.config.security;
 
+import com.softcell.gonogo.uaaserver.config.CustomTokenEnhancer;
 import com.softcell.gonogo.uaaserver.service.ClientDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -68,20 +69,10 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     }
 
 
-
-
-    /*@Bean
-    @Autowired
-    public TokenStoreUserApprovalHandler tokenStoreUserApprovalHandler(TokenStore tokenStore){
-        TokenStoreUserApprovalHandler handler = new TokenStoreUserApprovalHandler();
-        handler.setTokenStore(tokenStore);
-        handler.setRequestFactory(new DefaultOAuth2RequestFactory(clientDetailService));
-        handler.setClientDetailsService(clientDetailService);
-        return handler;
-    }*/
-
-
-
+    /**
+     * Setup the client application which attempts to get access to user's
+     * account after user permission.
+     */
     @Override
     public void configure(final ClientDetailsServiceConfigurer clients) throws Exception {// @formatter:off
 
@@ -90,6 +81,14 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     } // @formatter:on
 
 
+    /**
+     * We set our authorization storage feature specifying that we would use the
+     * NOSQL store for token and authorization code storage.<br>
+     * <br>
+     *
+     * We also attach the {@link AuthenticationManager} so that password grants
+     * can be processed.
+     */
     @Override
     public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         // @formatter:off
@@ -107,6 +106,13 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     }
 
 
+    /**
+     * The OAuth2 tokens are defined in the datasource defined in the
+     * <code>auth-server.yml</code> file stored in the Spring Cloud config
+     * github repository.
+     *
+     * @return
+     */
     @Bean
     public TokenStore tokenStore() {
         return new JwtTokenStore(accessTokenConverter());
