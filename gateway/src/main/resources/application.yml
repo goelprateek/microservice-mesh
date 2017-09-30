@@ -8,6 +8,16 @@ spring:
       skip-pattern: (.+favicon.*)
 
 
+
+# See http://cloud.spring.io/spring-cloud-netflix/spring-cloud-netflix.html
+zuul: # those values must be configured depending on the application specific needs
+  host:
+    max-total-connections: 1000
+    max-per-route-connections: 100
+  semaphore:
+    max-semaphores: 500
+
+
 # ===================================================================
 # GoNoGo specific properties
 # ===================================================================
@@ -23,10 +33,4 @@ gonogo:
     contact-email:
     license:
     license-url:
-  gateway:
-    rate-limiting:
-        enabled: false
-        limit: 100000
-        duration-in-seconds: 3600
-    authorized-microservices-endpoints: # Access Control Policy, if left empty for a route, all endpoints will be accessible
-        app1: /api,/v2/api-docs # recommended dev configuration
+
