@@ -59,8 +59,8 @@ public class CacheConfiguration {
     @Bean
     public CacheManager cacheManager(HazelcastInstance hazelcastInstance) {
         log.debug("Starting HazelcastCacheManager");
-        return new com.hazelcast.spring.cache.HazelcastCacheManager(hazelcastInstance);
-
+        CacheManager cacheManager = new com.hazelcast.spring.cache.HazelcastCacheManager(hazelcastInstance);
+        return cacheManager;
     }
 
     @Bean
@@ -104,6 +104,10 @@ public class CacheConfiguration {
             }
         }
         config.getMapConfigs().put("default", initializeDefaultMapConfig());
+
+        // if u want to see member statistics please uncomment it
+        //config.setManagementCenterConfig(new ManagementCenterConfig().setEnabled(true).setUrl("http://localhost:7070/mancenter"));
+
         config.getMapConfigs().put("com.softcell.gonogo.domain.*", initializeDomainMapConfig(goNoGoProperties));
         config.getMapConfigs().put("clustered-http-sessions", initializeClusteredSession(goNoGoProperties));
         return Hazelcast.newHazelcastInstance(config);
