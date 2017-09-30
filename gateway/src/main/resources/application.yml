@@ -7,6 +7,10 @@ spring:
     web:
       skip-pattern: (.+favicon.*)
 
+
+# ===================================================================
+# GoNoGo specific properties
+# ===================================================================
 gonogo:
   swagger:
     default-include-pattern: /api/.*
