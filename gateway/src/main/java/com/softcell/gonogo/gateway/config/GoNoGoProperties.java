@@ -21,6 +21,8 @@ public class GoNoGoProperties {
 
     private final Cache cache = new Cache();
 
+    private final Logging logging = new Logging();
+
     private final CorsConfiguration cors = new CorsConfiguration();
 
     @Data
@@ -40,7 +42,7 @@ public class GoNoGoProperties {
     }
 
     @Data
-    public static class Gateway{
+    public static class Gateway {
         private final GoNoGoProperties.Gateway.RateLimiting rateLimiting = new GoNoGoProperties.Gateway.RateLimiting();
         private Map<String, List<String>> authorizedMicroservicesEndpoints = new LinkedHashMap();
 
@@ -60,17 +62,29 @@ public class GoNoGoProperties {
 
         @Data
         public static class Hazelcast {
-
             private int timeToLiveSeconds = 3600;
-
             private int backupCount = 1;
-
-
         }
     }
 
+    @Data
+    public static class Logging {
+
+        private final Logstash logstash = new Logstash();
 
 
+        @Data
+        public static class Logstash {
+
+            private boolean enabled = false;
+            private String host = "localhost";
+            private int port = 5000;
+            private int queueSize = 512;
+
+        }
+
+
+    }
 
 
 }
