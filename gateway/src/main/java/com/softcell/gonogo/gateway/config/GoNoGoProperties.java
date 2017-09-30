@@ -14,10 +14,11 @@ import java.util.Map;
 @Data
 public class GoNoGoProperties {
 
-    private Swagger swagger;
+    private final Swagger swagger = new Swagger();
 
-    private Gateway gateway;
+    private final Gateway gateway = new Gateway();
 
+    private final Cache cache = new Cache();
 
     @Data
     public static class Swagger {
@@ -48,6 +49,23 @@ public class GoNoGoProperties {
 
         }
     }
+
+    @Data
+    public static class Cache {
+
+        private final Hazelcast hazelcast = new Hazelcast();
+
+        @Data
+        public static class Hazelcast {
+
+            private int timeToLiveSeconds = 3600;
+
+            private int backupCount = 1;
+
+
+        }
+    }
+
 
 
 
