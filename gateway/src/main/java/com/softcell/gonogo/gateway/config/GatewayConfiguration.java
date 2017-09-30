@@ -4,7 +4,9 @@ package com.softcell.gonogo.gateway.config;
 import com.softcell.gonogo.gateway.gateway.accesscontroll.AccessControlFilter;
 import com.softcell.gonogo.gateway.gateway.ratelimiting.RateLimitingFilter;
 import com.softcell.gonogo.gateway.gateway.responserewriting.SwaggerBasePathRewritingFilter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.RouteLocator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,31 +14,48 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GatewayConfiguration {
 
-    @Configuration
-    public static class SwaggerBasePathRewritingConfiguration {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GatewayConfiguration.class);
 
-        @Bean
-        public SwaggerBasePathRewritingFilter swaggerBasePathRewritingFilter(){
-            return new SwaggerBasePathRewritingFilter();
-        }
+    private final GoNoGoProperties goNoGoProperties;
+
+    @Autowired
+    private RouteLocator routeLocator;
+
+
+    public GatewayConfiguration(GoNoGoProperties goNoGoProperties) {
+        this.goNoGoProperties = goNoGoProperties;
     }
 
-    @Configuration
-    public static class AccessControlFilterConfiguration {
+    @Bean
+    public RateLimitingFilter rateLimitingFilter() {
 
-        @Bean
-        public AccessControlFilter accessControlFilter(RouteLocator routeLocator, GoNoGoProperties goNoGoProperties){
-            return new AccessControlFilter(routeLocator, goNoGoProperties);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(" initializing RateLimiting Filter  ");
         }
+
+        return new RateLimitingFilter(goNoGoProperties);
     }
+
+
+    @Bean
+    public SwaggerBasePathRewritingFilter swaggerBasePathRewritingFilter() {
+        return new SwaggerBasePathRewritingFilter();
+    }
+
+
+    @Bean
+    public AccessControlFilter accessControlFilter(RouteLocator routeLocator, GoNoGoProperties goNoGoProperties) {
+        return new AccessControlFilter(routeLocator, goNoGoProperties);
+    }
+
 
     /**
      * Configures the Zuul filter that limits the number of API calls per user.
      * <p>
      * This uses Bucke4J to limit the API calls, see {@link com.softcell.gonogo.gateway.gateway.ratelimiting.RateLimitingFilter}.
      */
-    @Configuration
-    @ConditionalOnProperty("gonogo.gateway.rate-limiting.enabled")
+    /*@Configuration
+    //@ConditionalOnProperty("gonogo.gateway.rate-limiting.enabled")
     public static class RateLimitingConfiguration {
 
         private final GoNoGoProperties goNoGoProperties;
@@ -49,6 +68,6 @@ public class GatewayConfiguration {
         public RateLimitingFilter rateLimitingFilter() {
             return new RateLimitingFilter(goNoGoProperties);
         }
-    }
+    }*/
 
 }
