@@ -198,6 +198,11 @@
             <artifactId>spring-security-data</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+        </dependency>
+
     </dependencies>
 
 
@@ -236,6 +241,10 @@
                     </plugin>
                 </plugins>
             </build>
+            <properties>
+                <!-- log configuration -->
+                <logback.loglevel>DEBUG</logback.loglevel>
+            </properties>
 
         </profile>
 
