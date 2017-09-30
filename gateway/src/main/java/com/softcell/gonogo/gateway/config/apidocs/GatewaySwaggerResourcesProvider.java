@@ -1,5 +1,6 @@
 package com.softcell.gonogo.gateway.config.apidocs;
 
+import com.softcell.gonogo.gateway.constants.GoNoGoConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.netflix.zuul.filters.Route;
 import org.springframework.cloud.netflix.zuul.filters.RouteLocator;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import springfox.documentation.swagger.web.SwaggerResource;
 import springfox.documentation.swagger.web.SwaggerResourcesProvider;
@@ -14,8 +16,12 @@ import springfox.documentation.swagger.web.SwaggerResourcesProvider;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Retrieves all registered microservices Swagger resources.
+ */
 @Component
 @Primary
+@Profile(GoNoGoConstants.SPRING_PROFILE_SWAGGER)
 public class GatewaySwaggerResourcesProvider implements SwaggerResourcesProvider{
 
     private final Logger log = LoggerFactory.getLogger(GatewaySwaggerResourcesProvider.class);
