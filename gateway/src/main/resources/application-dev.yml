@@ -37,3 +37,9 @@ gonogo:
     exposed-headers: "Authorization"
     allow-credentials: true
     max-age: 1800
+  logging:
+    logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
+      enabled: false
+      host: localhost
+      port: 5044
+      queue-size: 512
