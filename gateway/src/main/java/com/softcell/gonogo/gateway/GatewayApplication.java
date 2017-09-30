@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoRestTemplateCustomizer;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
@@ -13,9 +12,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.ribbon.RibbonClientHttpRequestFactory;
 import org.springframework.cloud.netflix.ribbon.SpringClientFactory;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
-import org.springframework.cloud.sleuth.Sampler;
-import org.springframework.cloud.sleuth.Span;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
@@ -54,11 +50,14 @@ public class GatewayApplication extends SpringBootServletInitializer{
 		LOGGER.info("\n----------------------------------------------------------\n\t" +
 						"Application '{}' is running! Access URLs:\n\t" +
 						"Local: \t\thttp://localhost:{}\n\t" +
-						"External: \thttp://{}:{}\n----------------------------------------------------------",
+						"External: \thttp://{}:{}\n\t" +
+						"Having profile:  \t {}" +
+						"----------------------------------------------------------",
 				env.getProperty("spring.application.name"),
 				env.getProperty("server.port"),
 				InetAddress.getLocalHost().getHostAddress(),
-				env.getProperty("server.port"));
+				env.getProperty("server.port"),
+				env.getActiveProfiles());
 
 		String configServerStatus = env.getProperty("configserver.status");
 		LOGGER.info("\n----------------------------------------------------------\n\t" +
