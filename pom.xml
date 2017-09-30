@@ -42,6 +42,9 @@
         <lombok.version>1.16.12</lombok.version>
         <bucket4j.version>3.0.1</bucket4j.version>
         <jcache.version>1.0.0</jcache.version>
+        <hazelcast-hibernate52.version>1.2</hazelcast-hibernate52.version>
+        <hazelcast-wm.version>3.7</hazelcast-wm.version>
+        <hazelcast.version>3.8.6</hazelcast.version>
     </properties>
 
     <dependencyManagement>
@@ -108,6 +111,31 @@
                 <artifactId>cache-api</artifactId>
                 <version>${jcache.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.hazelcast</groupId>
+                <artifactId>hazelcast</artifactId>
+                <version>${hazelcast.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.hazelcast</groupId>
+                <artifactId>hazelcast-hibernate52</artifactId>
+                <version>${hazelcast-hibernate52.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.hazelcast</groupId>
+                <artifactId>hazelcast-spring</artifactId>
+                <version>${hazelcast.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.hazelcast</groupId>
+                <artifactId>hazelcast-wm</artifactId>
+                <version>${hazelcast-wm.version}</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>
