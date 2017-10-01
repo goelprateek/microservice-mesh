@@ -46,6 +46,7 @@
         <hazelcast-wm.version>3.7</hazelcast-wm.version>
         <hazelcast.version>3.8.6</hazelcast.version>
         <logstash-logback-encoder.version>4.11</logstash-logback-encoder.version>
+        <problem-spring-web.version>0.20.0</problem-spring-web.version>
     </properties>
 
     <dependencyManagement>
@@ -143,6 +144,11 @@
                 <version>${logstash-logback-encoder.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.zalando</groupId>
+                <artifactId>problem-spring-web</artifactId>
+                <version>${problem-spring-web.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
