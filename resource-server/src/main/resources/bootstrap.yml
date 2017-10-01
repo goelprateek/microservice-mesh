@@ -3,7 +3,7 @@ spring:
     name: resource-server
   cloud:
     config:
-      uri: ${CONFIG_SERVER_URL:http://localhost:9094}
+      uri: ${CONFIG_SERVER_URL:http://localhost:7070}
       fail-fast: true
     bus:
       enabled: true

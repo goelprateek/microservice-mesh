@@ -39,7 +39,7 @@ gonogo:
     max-age: 1800
   logging:
     logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
-      enabled: false
+      enabled: true
       host: localhost
       port: 5044
       queue-size: 512

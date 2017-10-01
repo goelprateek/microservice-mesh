@@ -3,4 +3,4 @@ spring:
     name: card-statement
   cloud:
     config:
-      uri: ${CONFIG_SERVER_URL:http://localhost:9094}
+      uri: ${CONFIG_SERVER_URL:http://localhost:7070}
