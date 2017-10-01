@@ -49,25 +49,4 @@ public class GatewayConfiguration {
     }
 
 
-    /**
-     * Configures the Zuul filter that limits the number of API calls per user.
-     * <p>
-     * This uses Bucke4J to limit the API calls, see {@link com.softcell.gonogo.gateway.gateway.ratelimiting.RateLimitingFilter}.
-     */
-    /*@Configuration
-    //@ConditionalOnProperty("gonogo.gateway.rate-limiting.enabled")
-    public static class RateLimitingConfiguration {
-
-        private final GoNoGoProperties goNoGoProperties;
-
-        public RateLimitingConfiguration(GoNoGoProperties goNoGoProperties) {
-            this.goNoGoProperties = goNoGoProperties;
-        }
-
-        @Bean
-        public RateLimitingFilter rateLimitingFilter() {
-            return new RateLimitingFilter(goNoGoProperties);
-        }
-    }*/
-
 }
