@@ -1,8 +1,8 @@
 package com.softcell.gonogo.resourceserver.rest;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import com.netflix.ribbon.proxy.annotation.Hystrix;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +16,7 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/")
+@RefreshScope
 public class ProtectedResource {
 
 
@@ -23,14 +24,15 @@ public class ProtectedResource {
         return new ArrayList<>();
     }
 
+    @Value("${test.key:keeys}")
+    private String test;
+
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     @HystrixCommand(fallbackMethod = "fallback")
     public String helloWorld(OAuth2Authentication principal) {
-        return principal == null ? "Hello anonymous " : "Hello " + principal.getName();
+        return principal == null ? "Hello anonymous " : "Hello " + test + principal.getName();
     }
-
-
 
     @PreAuthorize("#oauth2.hasScope('openid') and hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "secret", method = RequestMethod.GET)
