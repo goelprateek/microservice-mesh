@@ -12,12 +12,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
 /**
  * Created by prateek on 23/5/17.
  */
 @Configuration
 @Order(ManagementServerProperties.ACCESS_OVERRIDE_ORDER)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class UaaWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
 
     @Autowired
     private UserAuthProviderService userAuthProviderService;
@@ -28,6 +30,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -56,15 +63,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }*/
 
 
-
-    @Override
-    @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
-
-
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         // @formatter:off
@@ -74,5 +72,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         // @formatter:on
     }
+
 
 }
