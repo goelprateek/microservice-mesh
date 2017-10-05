@@ -1,4 +1,62 @@
-gng:
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overridden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
+#
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+
+security:
+  oauth2:
+    resource:
+      filter-order: 3
+  basic:
+    enabled: false
+
+
+management:
   security:
-    jwt:
-      pass: ${pass:mySecretKey}
+    roles: ADMIN
+  context-path: /management
+
+server:
+  session:
+    cookie:
+      http-only: true
+
+spring:
+  messages:
+    basename: i18n/messages
+  mvc:
+    favicon:
+      enabled: false
+  thymeleaf:
+    mode: XHTML
+
+# ===================================================================
+# UAA specific properties
+# ===================================================================
+uaa:
+  key-store:
+    alias: jwt
+    name: jwt.jks
+    password: mySecretKey
+
+  swagger:
+    default-include-pattern: /api/.*
+    title: uaa API
+    description: uaa API documentation
+    version: 0.0.1
+    terms-of-service-url:
+    contact-name:
+    contact-url:
+    contact-email:
+    license:
+    license-url:
+

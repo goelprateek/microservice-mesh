@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 
+import javax.validation.constraints.NotNull;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,10 @@ public class GoNoGoProperties {
     private final Logging logging = new Logging();
 
     private final CorsConfiguration cors = new CorsConfiguration();
+
+    private final Security security = new Security();
+
+    private final Ribbon ribbon = new Ribbon();
 
     @Data
     public static class Swagger {
@@ -82,6 +87,88 @@ public class GoNoGoProperties {
             private int queueSize = 512;
 
         }
+
+
+    }
+
+    @Data
+    public static class Security {
+
+        private final RememberMe rememberMe = new RememberMe();
+
+        private final ClientAuthorization clientAuthorization = new ClientAuthorization();
+
+        private final Authentication authentication = new Authentication();
+
+        public RememberMe getRememberMe() {
+            return rememberMe;
+        }
+
+        public ClientAuthorization getClientAuthorization() {
+            return clientAuthorization;
+        }
+
+        public Authentication getAuthentication() {
+            return authentication;
+        }
+
+        @Data
+        public static class ClientAuthorization {
+
+            private String accessTokenUri;
+
+            private String tokenServiceId;
+
+            private String clientId;
+
+            private String clientSecret;
+
+        }
+
+        @Data
+        public static class Authentication {
+
+            private final Oauth oauth = new Oauth();
+
+            private final Jwt jwt = new Jwt();
+
+
+            @Data
+            public static class Oauth {
+
+                private String clientId;
+
+                private String clientSecret;
+
+                private int tokenValidityInSeconds = 1800;
+
+            }
+
+            @Data
+            public static class Jwt {
+
+                private String secret;
+
+                private long tokenValidityInSeconds = 1800;
+
+                private long tokenValidityInSecondsForRememberMe = 2592000;
+
+            }
+        }
+
+        @Data
+        public static class RememberMe {
+
+            @NotNull
+            private String key;
+
+        }
+    }
+
+    @Data
+    public static class Ribbon {
+
+        private String[] displayOnActiveProfiles;
 
 
     }

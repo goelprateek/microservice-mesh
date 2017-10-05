@@ -5,7 +5,6 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -39,8 +38,6 @@ import java.util.Arrays;
 public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuth2ResourceServerConfig.class);
-
-
 
 
     /**

@@ -1,63 +1,72 @@
 package com.softcell.gonogo.uaaserver.service;
 
-import com.softcell.gonogo.uaaserver.exception.UserNotActivatedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Locale;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Authentication user from data store
  */
-@Service
+@Service("hybridUserDetailsService")
 public class HybridUserDetailsService implements UserDetailsService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HybridUserDetailsService.class);
 
 
-    @Autowired
-    private UserService userService;
+    private Collection<UserDetailsService> userDetailsServices = new LinkedList<>();
+
+    public void addService(UserDetailsService userDetailsService) {
+        this.userDetailsServices.add(userDetailsService);
+    }
+
+    public void addService(Collection<UserDetailsService> userDetailsService) {
+        this.userDetailsServices.addAll(userDetailsService);
+    }
+
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        if(LOGGER.isDebugEnabled()){
-            LOGGER.debug(" Loading userDetails from HybridUserDetailsService based on username {} ",username);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(" Loading userDetails from HybridUserDetailsService based on username {} ", username);
         }
-
-        String lowerCaseLogin = username.toLowerCase(Locale.ENGLISH);
 
         if (null == username && username.isEmpty()) {
             throw new UsernameNotFoundException(" username is empty ");
         }
 
-        Optional<com.softcell.gonogo.uaaserver.model.User> userFromDatabase = userService.findByEmail(lowerCaseLogin);
+        String lowerCaseLogin = username.toLowerCase(Locale.ENGLISH);
 
-        return userFromDatabase.map(user -> {
-            if(!user.getIsActivated()){
-                throw new UserNotActivatedException("User " + lowerCaseLogin + " was not activated");
+        if (!CollectionUtils.isEmpty(userDetailsServices)) {
+
+            for (UserDetailsService sv : userDetailsServices) {
+                try {
+
+                    final UserDetails userDetails = sv.loadUserByUsername(lowerCaseLogin);
+
+                    if (null != userDetails) {
+                        return userDetails;
+                    }
+
+                } catch (UsernameNotFoundException ex) {
+                    LOGGER.error(" username {} not found in data store ", lowerCaseLogin);
+                } catch (Exception ex) {
+                    LOGGER.error(" unexpected exception caught while searching user in hybridUserDetailsService  ");
+                    ex.printStackTrace();
+                    throw ex;
+                }
             }
+        }
 
-            List<SimpleGrantedAuthority> grantedAuthorities = user.getRights().stream().map(right -> new SimpleGrantedAuthority(right)).collect(Collectors.toList());
-            return new org.springframework.security.core.userdetails.User(lowerCaseLogin,
-                    user.getPassword(),
-                    grantedAuthorities);
-
-        }).orElseThrow( () -> new UsernameNotFoundException("User " + lowerCaseLogin + " was not found in the " +
-                "database"));
-
+        throw new UsernameNotFoundException("Unknown user ");
     }
 
 }

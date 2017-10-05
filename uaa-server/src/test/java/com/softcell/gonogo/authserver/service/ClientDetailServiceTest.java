@@ -1,5 +1,6 @@
 package com.softcell.gonogo.authserver.service;
 
+import com.softcell.gonogo.uaaserver.UaaServerApplication;
 import com.softcell.gonogo.uaaserver.model.ClientDetail;
 import com.softcell.gonogo.uaaserver.repository.ClientDetailRepository;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -8,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -18,6 +20,7 @@ import java.util.HashSet;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
+@SpringBootTest(classes = UaaServerApplication.class)
 @DataMongoTest
 public class ClientDetailServiceTest {
 
@@ -44,7 +47,6 @@ public class ClientDetailServiceTest {
         authClient.setScope(new HashSet<>(Arrays.asList("trust", "read", "write")));
         authClient.setSecretRequired(true);
 
-
     }
 
 
@@ -56,9 +58,4 @@ public class ClientDetailServiceTest {
         assertEquals(save.getClientId(), authClient.getClientId());
 
     }
-
-
-
-
-
 }

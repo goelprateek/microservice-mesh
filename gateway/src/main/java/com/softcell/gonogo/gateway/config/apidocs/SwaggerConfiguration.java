@@ -4,7 +4,6 @@ import com.fasterxml.classmate.TypeResolver;
 import com.softcell.gonogo.gateway.config.GoNoGoProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +19,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
-
-import static springfox.documentation.builders.PathSelectors.regex;
 
 /**
  * Springfox Swagger configuration.
@@ -70,7 +66,16 @@ public class SwaggerConfiguration {
                 contact, this.goNoGoProperties.getSwagger().getLicense(), this.goNoGoProperties.getSwagger().getLicenseUrl(), new ArrayList());
 
         Docket docket = (new Docket(DocumentationType.SWAGGER_2))
-                .host(this.goNoGoProperties.getSwagger().getHost()).protocols(new HashSet(Arrays.asList(this.goNoGoProperties.getSwagger().getProtocols()))).apiInfo(apiInfo).forCodeGeneration(true).directModelSubstitute(ByteBuffer.class, String.class).genericModelSubstitutes(new Class[]{ResponseEntity.class}).select().paths(PathSelectors.regex(this.goNoGoProperties.getSwagger().getDefaultIncludePattern())).build();
+                .host(this.goNoGoProperties.getSwagger().getHost())
+                .protocols(new HashSet(Arrays.asList(this.goNoGoProperties.getSwagger().getProtocols())))
+                .apiInfo(apiInfo)
+                .forCodeGeneration(true)
+                .directModelSubstitute(ByteBuffer.class, String.class)
+                .genericModelSubstitutes(new Class[]{ResponseEntity.class})
+                .select()
+                .paths(PathSelectors.regex(this.goNoGoProperties.getSwagger().getDefaultIncludePattern()))
+                .build();
+
         watch.stop();
         this.log.debug("Started Swagger in {} ms", watch.getTotalTimeMillis());
         return docket;

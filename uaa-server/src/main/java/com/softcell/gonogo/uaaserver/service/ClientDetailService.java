@@ -2,6 +2,8 @@ package com.softcell.gonogo.uaaserver.service;
 
 import com.softcell.gonogo.uaaserver.model.ClientDetail;
 import com.softcell.gonogo.uaaserver.repository.ClientDetailRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.*;
@@ -19,6 +21,7 @@ import java.util.List;
 @Service("clientDetailService")
 public class ClientDetailService implements ClientDetailsService, ClientRegistrationService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientDetailService.class);
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -29,7 +32,9 @@ public class ClientDetailService implements ClientDetailsService, ClientRegistra
     @Override
     public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
 
-        System.err.println(" authenticating client" + clientId);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(" authenticating client_id {} ", clientId);
+        }
 
         ClientDetail clientDetails = clientDetailsRepository.findByClientId(clientId);
 

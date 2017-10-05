@@ -45,9 +45,7 @@ public class WebConfigurer implements ServletContextInitializer {
 
     @Bean
     public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-
-        return new CorsFilter(source);
+        return new CorsFilter(new UrlBasedCorsConfigurationSource());
     }
 
 }

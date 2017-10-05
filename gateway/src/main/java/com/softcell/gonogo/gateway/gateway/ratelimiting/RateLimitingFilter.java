@@ -4,7 +4,7 @@ package com.softcell.gonogo.gateway.gateway.ratelimiting;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.softcell.gonogo.gateway.config.GoNoGoProperties;
-import com.softcell.gonogo.gateway.config.security.SecurityUtils;
+import com.softcell.gonogo.gateway.security.SecurityUtils;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Bucket4j;

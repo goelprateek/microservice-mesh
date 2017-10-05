@@ -12,3 +12,34 @@
 spring:
   profiles:
     active: dev
+    include: swagger
+  jackson:
+    serialization.indent_output: true
+  thymeleaf:
+    cache: false
+
+
+oauth2:
+  signature-verification:
+    public-key-endpoint-uri: http://auth-server/uaa/oauth/token_key
+    #ttl for public keys to verify JWT tokens (in ms)
+    ttl: 3600000
+    public-key-refresh-rate-limit: 10000
+  web-client-configuration:
+    #keep in sync with UAA configuration
+    client-id: uiapplication
+    secret: secret
+    # Controls session expiration due to inactivity (ignored for remember-me).
+    # Negative values disable session inactivity expiration.
+    session-timeout-in-seconds: 1800
+
+# ===================================================================
+# UAA specific properties
+# ===================================================================
+
+uaa:
+  security:
+    authentication:
+      oauth:
+        client-id: internal
+        client-secret: internal

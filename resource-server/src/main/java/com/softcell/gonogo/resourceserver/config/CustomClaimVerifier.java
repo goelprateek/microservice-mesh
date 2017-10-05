@@ -23,10 +23,10 @@ public class CustomClaimVerifier implements JwtClaimsSetVerifier {
         if(LOGGER.isDebugEnabled())
             LOGGER.debug(" using custom claims verifier ");
 
-        final String organization = (String) claims.get("organization");
+        final String username = (String) claims.get("user_name");
 
-        if ((organization == null) || (organization.length() == 0)) {
-            throw new InvalidTokenException("organization claim is empty");
+        if ((username == null) || (username.length() == 0)) {
+            throw new InvalidTokenException("username claim is empty");
         }
 
     }
