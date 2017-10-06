@@ -170,12 +170,6 @@
                 </plugin>
 
                 <plugin>
-                    <inherited>false</inherited>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                </plugin>
-
-                <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>3.0.1</version>
                     <executions>
@@ -216,7 +210,6 @@
                         <tag>latest</tag>
                         <forceTags>true</forceTags>
                         <contextDirectory>${project.build.directory}</contextDirectory>
-
                     </configuration>
                 </plugin>
             </plugins>
