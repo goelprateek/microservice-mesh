@@ -59,7 +59,7 @@
 
     <build>
 
-        <finalName>configuration-server</finalName>
+        <finalName>${project.artifactId}</finalName>
 
         <resources>
             <resource>
