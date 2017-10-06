@@ -1,11 +1,18 @@
-FROM openjdk:8
+FROM java:8-jre-alpine
 MAINTAINER prateek goel
-VOLUME /tmp
+
+
+
+ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
+    APP_SLEEP=0 \
+    JAVA_OPTS=""
 
 WORKDIR /
 
-ADD target/uaa-server.jar uaa-server.jar
+ADD target/uaa-server.jar /uaa-server.jar
 
-RUN bash -c  'touch uaa.jar'
+CMD echo " The application will start in ${APP_SLEEP}s..." && \
+    sleep ${APP_SLEEP} && \
+    java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom \
+    -Dspring.data.mongodb.uri=mongodb://uaa-mongodb/uam  -jar /uaa-server.jar
 
-ENTRYPOINT  ["java" ,  "-Dspring.data.mongodb.uri=mongodb://uaa-mongodb/uam" ,"-Djava.security.egd=file:/dev/./urandom" , "-jar" , "uaa-server.jar"]
