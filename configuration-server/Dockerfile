@@ -1,14 +1,19 @@
 FROM java:8-jre-alpine
 MAINTAINER prateekg@softcell.com
 
-ADD target/configuration-server.jar configuration-server.jar
+ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
+    APP_SLEEP=0 \
+    JAVA_OPTS=""
 
-VOLUME /tmp
+WORKDIR /
 
-VOLUME /target
+ADD target/configuration-server.jar /configuration-server.jar
 
-RUN bash -c  'touch configuration-server.jar'
+EXPOSE 7070
 
-EXPOSE 9092
+CMD echo " The application will start in ${APP_SLEEP}s..." && \
+    sleep ${APP_SLEEP} && \
+    java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom  -jar /configuration-server.jar
 
-ENTRYPOINT  ["java"  ,"-Djava.security.egd=file:/dev/./urandom" , "-jar" , "configuration-server.jar"]
+
+
