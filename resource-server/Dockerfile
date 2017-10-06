@@ -1,20 +1,16 @@
 FROM java:8-jre-alpine
 MAINTAINER prateekg@softcell.com
-VOLUME /tmp
+
+ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
+    JHIPSTER_SLEEP=0 \
+    JAVA_OPTS=""
+
+WORKDIR /
+
+ADD target/resource-server.jar /resource-server.jar
 
 
-ENV USER_NAME prateek
-ENV APP_HOME /home/${USER_NAME}/app
+CMD echo " The application will start in ${APP_SLEEP}s..." && \
+    sleep ${APP_SLEEP} && \
+    java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar /resource-server.jar
 
-RUN useradd -ms /bin/bash $USER_NAME
-RUN mkdir $APP_HOME
-
-ADD target/.jar $APP_HOME/resource-server.jar
-RUN chown $USER_NAME $APP_HOME/resource-server.jar
-
-USER $USER_NAME
-WORKDIR $APP_HOME
-
-RUN bash -c  'touch resource-server.jar'
-
-ENTRYPOINT  ["java"  ,"-Djava.security.egd=file:/dev/./urandom" , "-jar" , "resource-server.jar"]
