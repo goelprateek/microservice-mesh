@@ -1,11 +1,17 @@
 FROM java:8-jre-alpine
 MAINTAINER prateekg@softcell.com
-VOLUME /tmp
 
 
-ADD target/gateway.jar /gateway.jar
+ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
+    APP_SLEEP=0 \
+    JAVA_OPTS=""
+
 WORKDIR /
 
-RUN bash -c  'touch gateway.jar'
+ADD target/gateway.jar /gateway.jar
 
-ENTRYPOINT  ["java"  ,"-Djava.security.egd=file:/dev/./urandom" , "-jar" , "gateway.jar"]
+EXPOSE 8080
+
+CMD echo " The application will start in ${APP_SLEEP}s..." && \
+    sleep ${APP_SLEEP} && \
+    java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar /gateway.jar
