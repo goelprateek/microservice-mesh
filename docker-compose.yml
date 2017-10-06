@@ -2,6 +2,67 @@ version: '2'
 
 services:
 
+# adding zookeeper service on port 2181 [default port]
+  zookeeper:
+    image: wurstmeister/zookeeper:3.4.6
+    ports:
+      - 2181:2181
+# adding kafka service on port 9092 [default port]
+  kafka:
+    image: wurstmeister/kafka:0.10.1.1
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: localhost
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "socialCloudBus:1:1"
+    ports:
+      - 9092:9092
+
+#  adding elasticsearch
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.2.2
+    ports:
+      - "9200:9200"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    environment:
+      - "xpack.security.enabled=false"
+      - "ES_JAVA_OPTS=-Xms 512m -Xmx512m"
+
+# adding kibana
+  kibana:
+    image: docker.elastic.co/kibana/kibana:5.2.2
+    ports:
+      - "5601:5601"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      - "xpack.security.enabled=false"
+
+
+# adding logstash
+  logstash:
+    image: docker.elastic.co/logstash/logstash:5.2.2
+    ports:
+      - "25826:25826"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    volumes:
+      - $PWD/elk-config:/elk-config
+    command: logstash -f /elk-config/logstash.config
+
+
+# adding mongodb service on port 27017 [default port ] having volume attached to host machine mongo data directory
   mongodb:
     image: mongo:3.4
     container_name: uaa-mongodb
@@ -15,6 +76,17 @@ services:
     logging:
       driver: "json-file"
 
+# adding configuration server on port 7070
+  configuration-server:
+    build:
+      context: ./configuration-server
+      dockerfile: Dockerfile
+    image: gonogo/configuration-server
+    environment:
+      CONFIG_HOST: config-server
+      CONFIG_PORT: 7070
+
+# adding service registry on port 7071
   service-registry:
       build:
         context: ./service-registry
@@ -22,8 +94,9 @@ services:
       image: gonogo/service-registry
       environment:
         SERVICE_HOST: registry
-        SERVICE_PORT: 8761
+        SERVICE_PORT: 7071
 
+# adding UAA server on port 7072 , which depends on mongodb , kafka, zookeeper
   uaa-server:
     build:
       context: ./uaa-server
@@ -32,16 +105,20 @@ services:
     logging:
       driver: json-file
     ports:
-      - "9091:9091"
+      - "7072:7072"
     depends_on:
       - mongodb
+      - zookeeper
+      - kafka
     environment:
-      SERVICE_PORT: 9091
-      REGISTRY_URL: http://service-registry:8761/eureka
+      SERVICE_PORT: 7071
+      REGISTRY_URL: http://service-registry:7071/eureka
     links:
       - mongodb:mongodb
       - service-registry:service-registry
+      - configuration-server:configuration-server
 
+# adding micro proxy gateway for gonogo on port 8080, which depends on uaa-server, service-registry, configuration-service
   gateway:
     build:
       context: ./gateway
@@ -54,14 +131,20 @@ services:
     ports:
       - "8080:8080"
     depends_on:
+      logstash:
+        condition: service_healthy
       - uaa-server
+      - zookeeper
+      - kafka
     links:
+      - configuration-server:configuration-server
       - service-registry:service-registry
       - uaa-server:uaa-server
     environment:
-      SERVICE_PORT: 8080
-      REGISTRY_URL: http://service-registry:8761/eureka
+      SERVICE_PORT: 7071
+      REGISTRY_URL: http://service-registry:7071/eureka
 
+# adding resource server on port 7075
   resource-server:
     build:
       context: ./resource-server
@@ -70,13 +153,14 @@ services:
     logging:
       driver: json-file
     links:
+      - configuration-server:configuration-server
       - service-registry:service-registry
       - uaa-server:uaa-server
     environment:
-      SERVICE_PORT: 8081
-      REGISTRY_URL: http://service-registry:8761/eureka
+      SERVICE_PORT: 7071
+      REGISTRY_URL: http://service-registry:7071/eureka
 
-
+# adding social client on port 7076
   social-client:
     build:
       context: ./social-client
@@ -87,6 +171,6 @@ services:
     links:
       - service-registry:service-registry
     environment:
-      SERVICE_PORT: 8081
-      REGISTRY_URL: http://service-registry:8761/eureka
+      SERVICE_PORT: 7071
+      REGISTRY_URL: http://service-registry:7071/eureka
 
