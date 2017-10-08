@@ -3,9 +3,12 @@ MAINTAINER prateekg@softcell.com
 WORKDIR /
 
 
-ADD target/service-registry.jar /service-registry.jar
+ADD @project.build.finalName@.jar /service-registry.jar
 
 
 CMD echo " The application will start in ${APP_SLEEP}s..." && \
     sleep ${APP_SLEEP} && \
-    java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar /service-registry.jar
+    java ${JAVA_OPTS} \
+        -Djava.security.egd=file:/dev/./urandom \
+        -Dspring.profiles.active=docker \
+    -jar /service-registry.jar

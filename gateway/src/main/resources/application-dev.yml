@@ -61,7 +61,7 @@ gonogo:
     logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
       enabled: true
       host: localhost
-      port: 5044
+      port: 5000
       queue-size: 512
   security:
     client-authorization:

@@ -238,7 +238,7 @@
 
     <build>
 
-        <finalName>gateway</finalName>
+        <finalName>${project.artifactId}</finalName>
 
         <resources>
             <resource>
@@ -252,6 +252,13 @@
             </testResource>
         </testResources>
 
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+
 
     </build>
 
@@ -262,7 +269,6 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-
             <build>
                 <plugins>
                     <plugin>
@@ -275,7 +281,6 @@
                 <!-- log configuration -->
                 <logback.loglevel>DEBUG</logback.loglevel>
             </properties>
-
         </profile>
 
         <profile>

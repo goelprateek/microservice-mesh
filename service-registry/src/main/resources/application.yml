@@ -1,0 +1,36 @@
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overridden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
+#
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+
+
+
+
+
+---
+
+spring:
+  profiles: docker
+server:
+  port: ${SERVICE_PORT}
+eureka:
+  instance:
+    hostname: ${SERVICE_HOST}
+    port: ${server.port}
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${eureka.instance.port}/eureka
+  server:
+    wait-time-in-ms-when-sync-empty: 0
+    enable-self-preservation: false

@@ -7,10 +7,13 @@ ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
 
 WORKDIR /
 
-ADD target/resource-server.jar /resource-server.jar
+ADD @project.build.finalName@.jar /resource-server.jar
 
 
 CMD echo " The application will start in ${APP_SLEEP}s..." && \
     sleep ${APP_SLEEP} && \
-    java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar /resource-server.jar
+    java ${JAVA_OPTS} \
+        -Djava.security.egd=file:/dev/./urandom \
+        -Dspring.profiles.active=docker \
+    -jar /resource-server.jar
 

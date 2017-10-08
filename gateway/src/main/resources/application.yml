@@ -49,3 +49,14 @@ gonogo:
     license:
     license-url:
 
+---
+spring:
+  profiles: docker
+server:
+  port: ${SERVICE_PORT}
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      default-zone: ${REGISTRY_URL}

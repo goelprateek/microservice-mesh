@@ -11,6 +11,11 @@ spring:
       uri: ${CONFIG_SERVER_URL:http://localhost:7070}
       fail-fast: true
 
+---
 
-
-
+spring:
+  profiles: docker
+  cloud:
+    config:
+      uri: ${CONFIG_URL}
+      fail-fast: true

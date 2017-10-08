@@ -66,9 +66,9 @@ public class LoggingConfiguration {
 
         // More documentation is available at: https://github.com/logstash/logstash-logback-encoder
         LogstashEncoder logstashEncoder = new LogstashEncoder();
-        // Set the Logstash appender config from JHipster properties
+        // Set the Logstash appender config from GoNoGo properties
         logstashEncoder.setCustomFields(customFields);
-        // Set the Logstash appender config from JHipster properties
+        // Set the Logstash appender config from GoNoGo properties
         logstashAppender.addDestinations(new InetSocketAddress(goNoGoProperties.getLogging().getLogstash().getHost(),
                 goNoGoProperties.getLogging().getLogstash().getPort()));
 
