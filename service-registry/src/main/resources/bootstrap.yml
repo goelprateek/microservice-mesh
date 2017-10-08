@@ -14,3 +14,10 @@ spring:
 
 
 
+---
+spring:
+  profiles: docker
+  cloud:
+    config:
+      uri: ${CONFIG_URL}
+      fail-fast: true

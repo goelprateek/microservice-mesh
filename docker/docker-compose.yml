@@ -12,7 +12,9 @@ services:
   kafka:
     image: wurstmeister/kafka:0.10.1.1
     ports:
-      - 9092:9092
+      - "9092:9092"
+    depends_on:
+      - zookeeper
     environment:
       KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ADVERTISED_PORT: 9092
@@ -84,7 +86,7 @@ services:
     image: gonogo/configuration-server
     environment:
       SERVICE_PORT: 7070
-      KAFKA_SERVICE_URL: http://kafka:9092
+      KAFKA_SERVICE_URL: kafka:9092
     depends_on:
       - kafka
     links:
@@ -96,6 +98,7 @@ services:
       environment:
         SERVICE_HOST: registry
         SERVICE_PORT: 7071
+        CONFIG_URL: http://configuration-server:7070
       depends_on:
         - configuration-server
       links:
@@ -144,6 +147,7 @@ services:
     environment:
       SERVICE_PORT: 8080
       REGISTRY_URL: http://service-registry:7071/eureka
+      CONFIG_URL: http://configuration-server:7070
 
 # adding resource server on port 7075
   resource-server:
@@ -157,6 +161,7 @@ services:
     environment:
       SERVICE_PORT: 7075
       REGISTRY_URL: http://service-registry:7071/eureka
+      CONFIG_URL: http://configuration-server:7070
 
 # adding social client on port 7076
   social-client:
