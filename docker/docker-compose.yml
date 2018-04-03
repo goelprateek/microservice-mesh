@@ -19,7 +19,7 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ADVERTISED_PORT: 9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: "socialCloudBus:1:1"
+      KAFKA_CREATE_TOPICS: "springCloudBus12:1:1"
     healthcheck:
       test: ["CMD", "bash", "-c", "unset" , "JMX_PORT" ,";" ,"kafka-topics.sh","--zookeeper","zookeeper:2181","--list"]
       interval: 10s
@@ -136,10 +136,9 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - logstash
+      - configuration-server
+      - service-registry
       - uaa-server
-      - zookeeper
-      - kafka
     links:
       - configuration-server:configuration-server
       - service-registry:service-registry
@@ -174,3 +173,6 @@ services:
       SERVICE_PORT: 7076
       REGISTRY_URL: http://service-registry:7071/eureka
 
+networks:
+  spring-cloud-network:
+    driver: bridge
